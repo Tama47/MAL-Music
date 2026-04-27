@@ -237,7 +237,13 @@ function parseTheme(theme) {
     const artistJpMatch = artistPart.match(/\((.*?)\)/);
 
     let artistEng = artistPart.replace(/\(.*?\)/g, '').trim();
-    let artistJp = artistJpMatch ? artistJpMatch[1].trim() : artistEng;
+
+    let artistJp = artistEng;
+
+    // only accept JP if it actually contains Japanese characters
+    if (artistJpMatch && /[\u3040-\u30ff\u4e00-\u9faf]/.test(artistJpMatch[1])) {
+        artistJp = artistJpMatch[1].trim();
+    }
 
     return { titleEng, titleJp, artistEng, artistJp };
 }
