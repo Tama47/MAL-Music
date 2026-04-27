@@ -45,12 +45,15 @@ a {
 
 #results {
     display: grid;
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 15px;
 }
 
-@media (orientation: landscape) {
-    #results {
-        grid-template-columns: 1fr 1fr;
-    }
+@media (orientation: portrait) {
+  body {
+      zoom: 175%;
+  }
+  #results {
+      grid-template-columns: 1fr;
+  }
 }
