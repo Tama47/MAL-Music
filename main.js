@@ -53,7 +53,7 @@ async function loadMAL(username) {
         console.log(a.anime_id + " -> https://myanimelist.net/anime/" + a.anime_id)
     );
 
-    console.log("\Jikan requests...\n");
+    console.log("\Jikan API requests...\n");
 
     /* Sequential processing */
     for (const anime of malList) {
