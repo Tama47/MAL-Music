@@ -55,7 +55,7 @@ async function loadMAL(username) {
 
     console.log("\Jikan requests...\n");
 
-    /* Sequential processing (rate limit safe) */
+    /* Sequential processing */
     for (const anime of malList) {
 
         const id = anime.anime_id;
@@ -64,7 +64,7 @@ async function loadMAL(username) {
 
         const cached = await loadAnime(id, title, image);
 
-        if (!cached) await sleep(500);
+        if (!cached) await sleep(1000);
     }
 }
 
