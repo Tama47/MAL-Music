@@ -1,2 +1,1 @@
-# MAL-Music
-A simple static web page to search for anime music from MyAnimeList.
+https://tama47.github.io/MAL-Music/
