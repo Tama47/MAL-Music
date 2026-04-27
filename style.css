@@ -1,0 +1,53 @@
+body {
+    font-family: 'Trebuchet MS';
+    background: #111;
+    color: white;
+    padding: 20px;
+}
+
+input,
+button {
+    padding: 8px;
+    font-size: 16px;
+}
+
+.anime-card {
+    background: #1e1e1e;
+    margin: 15px 0;
+    padding: 15px;
+    border-radius: 8px;
+    display: flex;
+    gap: 15px;
+}
+
+.anime-card img {
+    width: 200px;
+    border-radius: 6px;
+}
+
+.song {
+    margin-left: 10px;
+    margin-bottom: 6px;
+}
+
+a {
+    color: #4fc3f7;
+    text-decoration: none;
+}
+
+.title-link {
+    color: white;
+    text-decoration: underline;
+}
+
+#results {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+@media (orientation: landscape) {
+    #results {
+        grid-template-columns: 1fr 1fr;
+    }
+}
