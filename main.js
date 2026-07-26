@@ -83,7 +83,7 @@ async function loadAnime(id, title, image) {
         console.log("Jikan request:", id);
 
         const res = await fetch(
-            `https://api.jikan.moe/v4/anime/${id}/themes`
+            `https://api.tenrai.org/v1/anime/${id}/themes`
         );
 
         const data = await res.json();
