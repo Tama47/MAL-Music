@@ -16,8 +16,19 @@
         <img src="Asset/Youtube_Music_icon.svg" style="height: 1em; width: auto; vertical-align: middle;">
     </h2>
 
-    <input type="text" id="username" placeholder="Enter MAL username">
-    <button onclick="goUser()">Load</button>
+    <div class="toolbar">
+
+        <div>
+            <input type="text" id="username" placeholder="Enter MAL username">
+            <button onclick="goUser()">Load</button>
+        </div>
+
+        <div class="lang-toggle">
+            <button id="lang-en" class="lang-btn active">🇬🇧 EN</button>
+            <button id="lang-jp" class="lang-btn">🇯🇵 JP</button>
+        </div>
+
+    </div>
 
     <div id="results"></div>
 

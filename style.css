@@ -1,3 +1,13 @@
+@media (orientation: portrait) {
+    body {
+        zoom: 175%;
+    }
+
+    #results {
+        grid-template-columns: 1fr;
+    }
+}
+
 body {
     font-family: 'Trebuchet MS';
     background: #111;
@@ -49,11 +59,30 @@ a {
     gap: 15px;
 }
 
-@media (orientation: portrait) {
-  body {
-      zoom: 175%;
-  }
-  #results {
-      grid-template-columns: 1fr;
-  }
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.lang-toggle {
+    display: flex;
+    gap: 4px;
+}
+
+.lang-btn {
+    background: #222;
+    color: #999;
+    border: 1px solid #444;
+    border-radius: 6px;
+    cursor: pointer;
+    padding: 8px 12px;
+}
+
+.lang-btn.active {
+    background: #646464;
+    color: #111;
+    border-color: #646464;
+    font-weight: bold;
 }

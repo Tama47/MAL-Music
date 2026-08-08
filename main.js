@@ -1,3 +1,5 @@
+let currentLanguage = "en";
+
 /* =========================================================
    LOAD UI
    ========================================================= */
@@ -27,6 +29,35 @@ function goUser() {
     loadMAL(username);
 }
 
+document.addEventListener("DOMContentLoaded", () => {
+
+    document.getElementById("lang-en")
+        .addEventListener("click", () => setLanguage("en"));
+
+    document.getElementById("lang-jp")
+        .addEventListener("click", () => setLanguage("jp"));
+});
+
+function setLanguage(lang) {
+
+    currentLanguage = lang;
+
+    document
+        .getElementById("lang-en")
+        .classList.toggle("active", lang === "en");
+
+    document
+        .getElementById("lang-jp")
+        .classList.toggle("active", lang === "jp");
+
+    const username =
+        document.getElementById("username").value.trim();
+
+    if (username) {
+        document.getElementById("results").innerHTML = "";
+        loadMAL(username);
+    }
+}
 
 /* =========================================================
    LOAD MAL
@@ -169,12 +200,22 @@ function renderCard(id, title, image, themes) {
             </h3>
 
             <strong>Openings:</strong>
-            ${renderSongs(openings)}
+            ${renderSongs(
+                openings,
+                id,
+                title,
+                title
+            )}
 
             <br>
 
             <strong>Endings:</strong>
-            ${renderSongs(endings)}
+            ${renderSongs(
+                endings,
+                id,
+                title,
+                title
+            )}
         </div>
     `;
 
@@ -186,24 +227,61 @@ function renderCard(id, title, image, themes) {
    SONG RENDER
    ========================================================= */
 
-function renderSongs(list) {
+function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
 
-    if (!list.length) return "<div class='song'>None</div>";
+    if (!list.length)
+        return "<div class='song'>None</div>";
 
     return list.map(item => {
 
-        const engQuery =
-            encodeURIComponent(`${item.titleEng} by ${item.artistEng}`);
+        const isOpening =
+            item.musicTitle.startsWith("Opening");
 
-        const jpQuery =
-            encodeURIComponent(`${item.titleJp} - ${item.artistJp}`);
+        const type =
+            isOpening ? "Opening" : "Ending";
+
+        const songQuery =
+            currentLanguage === "jp"
+                ? encodeURIComponent(
+                    `${item.titleJp} - ${item.artistJp}`
+                )
+                : encodeURIComponent(
+                    `${item.titleEng} by ${item.artistEng}`
+                );
+
+        const songText =
+            currentLanguage === "jp"
+                ? `${item.titleJp} - ${item.artistJp}`
+                : `${item.titleEng} by ${item.artistEng}`;
+
+        const labelText =
+            currentLanguage === "jp"
+                ? `ノンクレジット${isOpening ? "OP" : "ED"}`
+                : type;
+
+        const searchText =
+            currentLanguage === "jp"
+                ? `${animeTitleJp} ノンクレジット${isOpening ? "OP" : "ED"}`
+                : `${animeTitleEng} ${type}`;
+
+        const searchQuery =
+            encodeURIComponent(searchText);
 
         return `
         <div class="song">
-            ${item.musicTitle}
 
-            <a href="https://music.youtube.com/search?q=${engQuery}" target="_blank">🇬🇧</a>
-            <a href="https://music.youtube.com/search?q=${jpQuery}" target="_blank">🇯🇵</a>
+            <a href="https://music.youtube.com/search?q=${searchQuery}"
+               target="_blank">
+                ${labelText}
+            </a>
+
+            |
+
+            <a href="https://music.youtube.com/search?q=${songQuery}"
+               target="_blank">
+                ${songText}
+            </a>
+
         </div>
         `;
     }).join("");
