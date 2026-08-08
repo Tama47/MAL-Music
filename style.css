@@ -74,7 +74,7 @@ a {
 
 @media (orientation: portrait) {
     body {
-        zoom: 175%;
+        zoom: 160%;
     }
 
     #results {

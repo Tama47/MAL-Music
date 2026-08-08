@@ -283,8 +283,8 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
 
         const labelText =
             currentLanguage === "jp"
-                ? `${isOpening ? "オープニング" : "エンディング"}${item.counter} |`
-                : `${type} ${item.counter} |`;
+                ? `${isOpening ? "オープニング" : "エンディング"}${item.counter}`
+                : `${type} ${item.counter}`;
 
         const searchText = currentLanguage === "jp" ?
             `${animeTitleJp} ノンクレジット${isOpening ? "OP" : "ED"}` :
