@@ -40,6 +40,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function setLanguage(lang) {
 
+    if (currentLanguage === lang) return;
+
     currentLanguage = lang;
 
     document
@@ -179,7 +181,7 @@ function renderCard(id, title, image, themes, titleEng, titleJp) {
     for (const op of (themes.openings || [])) {
 
         const parsed = parseTheme(op);
-        const key = parsed.titleEng + parsed.artistEng;
+        const key = parsed.titleEng;
 
         if (openingsSet.has(key)) continue;
 
@@ -196,7 +198,7 @@ function renderCard(id, title, image, themes, titleEng, titleJp) {
     for (const ed of (themes.endings || [])) {
 
         const parsed = parseTheme(ed);
-        const key = parsed.titleEng + parsed.artistEng;
+        const key = parsed.titleEng;
 
         if (openingsSet.has(key) || endingsSet.has(key)) continue;
 
@@ -281,8 +283,8 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
 
         const labelText =
             currentLanguage === "jp"
-                ? `ノンクレジット${isOpening ? "OP" : "ED"}`
-                : type;
+                ? `${isOpening ? "オープニング" : "エンディング"}${item.counter} |`
+                : `${type} ${item.counter} |`;
 
         const searchText = currentLanguage === "jp" ?
             `${animeTitleJp} ノンクレジット${isOpening ? "OP" : "ED"}` :
@@ -315,7 +317,9 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
 
 function parseTheme(theme) {
 
-    let cleaned = theme.replace(/^\d+:?\s*"?/, '').trim();
+    let cleaned = theme
+        .replace(/^(?:\d+|S\d+):\s*"?/, '')
+        .trim();
 
     const bySplit = cleaned.split(/ by /);
 
@@ -331,15 +335,19 @@ function parseTheme(theme) {
 
     let titleJp = jpMatch ? jpMatch[1].trim() : titleEng;
 
-    artistPart = artistPart.replace(/^"+|"+$/g, '').trim();
+    artistPart = artistPart
+        .replace(/\s*\(Abema ver\.\)/g, '')
+        .replace(/^"+|"+$/g, '')
+        .trim();
 
     const artistJpMatch = artistPart.match(/\((.*?)\)/);
 
-    let artistEng = artistPart.replace(/\(.*?\)/g, '').trim();
+    let artistEng = artistPart
+        .replace(/\(.*?\)/g, '')
+        .trim();
 
     let artistJp = artistEng;
 
-    // only accept JP if it actually contains Japanese characters
     if (artistJpMatch && /[\u3040-\u30ff\u4e00-\u9faf]/.test(artistJpMatch[1])) {
         artistJp = artistJpMatch[1].trim();
     }

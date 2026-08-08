@@ -34,11 +34,6 @@ button {
 }
 
 a {
-    color: #4fc3f7;
-    text-decoration: none;
-}
-
-.title-link {
     color: white;
     text-decoration: underline;
 }
