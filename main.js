@@ -84,7 +84,7 @@ async function loadMAL(username) {
         console.log(a.anime_id + " -> https://myanimelist.net/anime/" + a.anime_id)
     );
 
-    console.log("\Jikan API requests...\n");
+    console.log("\nTenrai API requests...\n");
 
     /* Sequential processing */
     for (const anime of malList) {
@@ -103,7 +103,7 @@ async function loadMAL(username) {
 /* =========================================================
    LOAD ANIME
    ========================================================= */
-
+   
 async function loadAnime(id, title, image) {
 
     let usedCache = true;
@@ -111,7 +111,8 @@ async function loadAnime(id, title, image) {
 
     if (!themes) {
 
-        console.log("Jikan request:", id);
+        console.log("Tenrai request:", id);
+        console.log("Tenrai theme request:", id);
 
         const res = await fetch(
             `https://api.tenrai.org/v1/anime/${id}/themes`
@@ -127,9 +128,33 @@ async function loadAnime(id, title, image) {
 
     } else {
         console.log("CACHE HIT:", id);
+        console.log("THEME CACHE HIT:", id);
     }
 
-    renderCard(id, title, image, themes);
+    let metadata = getCache("metadata_" + id);
+
+    if (!metadata) {
+        console.log("Tenrai request:", id);
+        console.log("Tenrai metadata request:", id);
+
+        const animeRes = await fetch(`https://api.tenrai.org/v1/anime/${id}`);
+        const animeData = await animeRes.json();
+
+        metadata = animeData.data;
+
+        setCache("metadata_" + id, metadata);
+    } else {
+        console.log("METADATA CACHE HIT:", id);
+    }
+
+    renderCard(
+        id,
+        title,
+        image,
+        themes,
+        metadata.title_english || title,
+        metadata.title_japanese || title
+    );
 
     return usedCache;
 }
@@ -139,7 +164,7 @@ async function loadAnime(id, title, image) {
    RENDER CARD
    ========================================================= */
 
-function renderCard(id, title, image, themes) {
+function renderCard(id, title, image, themes, titleEng, titleJp) {
 
     const openingsSet = new Set();
     const endingsSet = new Set();
@@ -203,8 +228,8 @@ function renderCard(id, title, image, themes) {
             ${renderSongs(
                 openings,
                 id,
-                title,
-                title
+                titleEng,
+                titleJp
             )}
 
             <br>
@@ -213,8 +238,8 @@ function renderCard(id, title, image, themes) {
             ${renderSongs(
                 endings,
                 id,
-                title,
-                title
+                titleEng,
+                titleJp
             )}
         </div>
     `;
@@ -259,26 +284,22 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
                 ? `ノンクレジット${isOpening ? "OP" : "ED"}`
                 : type;
 
-        const searchText =
-            currentLanguage === "jp"
-                ? `${animeTitleJp} ノンクレジット${isOpening ? "OP" : "ED"}`
-                : `${animeTitleEng} ${type}`;
+        const searchText = currentLanguage === "jp" ?
+            `${animeTitleJp} ノンクレジット${isOpening ? "OP" : "ED"}` :
+            `${animeTitleEng} ${type}`;
 
-        const searchQuery =
-            encodeURIComponent(searchText);
+        const searchQuery = encodeURIComponent(searchText);
 
         return `
         <div class="song">
 
-            <a href="https://music.youtube.com/search?q=${searchQuery}"
-               target="_blank">
+            <a href="https://www.google.com/search?q=${searchQuery}" target="_blank">
                 ${labelText}
             </a>
 
             |
 
-            <a href="https://music.youtube.com/search?q=${songQuery}"
-               target="_blank">
+            <a href="https://music.youtube.com/search?q=${songQuery}" target="_blank">
                 ${songText}
             </a>
 
@@ -348,7 +369,7 @@ function toLargeImage(url) {
    ========================================================= */
 
 function getCache(id) {
-    const raw = localStorage.getItem("jikan_" + id);
+    const raw = localStorage.getItem("Tenrai_" + id);
     if (!raw) return null;
 
     try {
@@ -361,7 +382,7 @@ function getCache(id) {
 }
 
 function setCache(id, data) {
-    localStorage.setItem("jikan_" + id, JSON.stringify({
+    localStorage.setItem("Tenrai_" + id, JSON.stringify({
         time: Date.now(),
         data
     }));
