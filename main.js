@@ -103,16 +103,15 @@ async function loadMAL(username) {
 /* =========================================================
    LOAD ANIME
    ========================================================= */
-   
+
 async function loadAnime(id, title, image) {
 
     let usedCache = true;
+
     let themes = getCache(id);
+    let metadata = getCache("metadata_" + id);
 
     if (!themes) {
-
-        console.log("Tenrai request:", id);
-        console.log("Tenrai theme request:", id);
 
         const res = await fetch(
             `https://api.tenrai.org/v1/anime/${id}/themes`
@@ -125,26 +124,27 @@ async function loadAnime(id, title, image) {
         setCache(id, themes);
 
         usedCache = false;
-
-    } else {
-        console.log("CACHE HIT:", id);
-        console.log("THEME CACHE HIT:", id);
     }
 
-    let metadata = getCache("metadata_" + id);
-
     if (!metadata) {
-        console.log("Tenrai request:", id);
-        console.log("Tenrai metadata request:", id);
 
-        const animeRes = await fetch(`https://api.tenrai.org/v1/anime/${id}`);
+        const animeRes = await fetch(
+            `https://api.tenrai.org/v1/anime/${id}`
+        );
+
         const animeData = await animeRes.json();
 
         metadata = animeData.data;
 
         setCache("metadata_" + id, metadata);
+
+        usedCache = false;
+    }
+
+    if (usedCache) {
+        console.log("CACHE HIT:", id);
     } else {
-        console.log("METADATA CACHE HIT:", id);
+        console.log("Tenrai request:", id);
     }
 
     renderCard(
@@ -293,7 +293,7 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
         return `
         <div class="song">
 
-            <a href="https://www.google.com/search?q=${searchQuery}" target="_blank">
+            <a href="https://www.google.com/search?q=${searchQuery}&tbm=vid" target="_blank">
                 ${labelText}
             </a>
 
