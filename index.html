@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <title>MAL Anime Music</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/svg+xml" href="Asset/Youtube_Music_icon.svg">
+    <link rel="icon" type="image/svg+xml" href="Asset/favicon.ico">
 </head>
 
 <body>
@@ -13,13 +13,23 @@
     <h2>
         <img src="Asset/MyAnimeList_Logo.png" style="height: 1em; width: auto; vertical-align: middle;">
         MyAnimeList → Anime Music
-        <img src="Asset/Youtube_Music_icon.svg" style="height: 1em; width: auto; vertical-align: middle;">
+        <img src="Asset/Youtube_Music_icon.png" style="height: 1em; width: auto; vertical-align: middle;">
     </h2>
 
     <div class="toolbar">
 
         <div>
             <input type="text" id="username" placeholder="Enter MAL username">
+
+            <select id="status">
+                <option value="7">All</option>
+                <option value="1" selected>Current</option>
+                <option value="2">Complete</option>
+                <option value="3">Pause</option>
+                <option value="4">Drop</option>
+                <option value="6">Plan</option>
+            </select>
+
             <button onclick="goUser()">Load</button>
         </div>
 

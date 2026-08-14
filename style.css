@@ -6,10 +6,17 @@ body {
 }
 
 input,
-button {
+button,
+select {
+    height: 40px;
     padding: 8px;
     font-size: 16px;
+    background: white;
+    color: black;
+    border: 1px solid #767676;
+    box-sizing: border-box;
 }
+
 
 .anime-card {
     background: #1e1e1e;

@@ -9,10 +9,12 @@ window.addEventListener("DOMContentLoaded", () => {
 
     const params = new URLSearchParams(window.location.search);
     const user = params.get("user");
+    const status = params.get("status") || "1";
 
     if (user) {
         document.getElementById("username").value = user;
-        loadMAL(user);
+        document.getElementById("status").value = status;
+        loadMAL(user, status);
     }
 });
 
@@ -21,12 +23,21 @@ function goUser() {
     const username = document.getElementById("username").value.trim();
     if (!username) return;
 
+    const status =
+        document.getElementById("status").value;
+
     const url = new URL(window.location.href);
+
     url.searchParams.set("user", username);
+
+    if (status !== "1")
+        url.searchParams.set("status", status);
+    else
+        url.searchParams.delete("status");
 
     history.pushState({}, "", url);
 
-    loadMAL(username);
+    loadMAL(username, status);
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -65,13 +76,13 @@ function setLanguage(lang) {
    LOAD MAL
    ========================================================= */
 
-async function loadMAL(username) {
+async function loadMAL(username, status = "1") {
 
     const resultsDiv = document.getElementById("results");
     resultsDiv.innerHTML = "Loading...";
 
     const url =
-        `https://corsproxy.io/?url=https://myanimelist.net/animelist/${username}/load.json?status=1`;
+        `https://corsproxy.io/?url=https://myanimelist.net/animelist/${username}/load.json?status=${status}`;
 
     console.log("MAL request:", url);
 
