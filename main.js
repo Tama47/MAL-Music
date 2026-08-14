@@ -108,7 +108,7 @@ async function loadMAL(username, status = "1") {
 
         const cached = await loadAnime(id, title, image);
 
-        if (!cached) await sleep(100);
+        if (!cached) await sleep(500);
     }
 }
 
