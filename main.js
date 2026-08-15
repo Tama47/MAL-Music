@@ -1,4 +1,5 @@
 let currentLanguage = "en";
+let currentMalList = null;
 
 /* =========================================================
    LOAD UI
@@ -68,7 +69,7 @@ function setLanguage(lang) {
 
     if (username) {
         document.getElementById("results").innerHTML = "";
-        loadMAL(username);
+        rerenderCurrentLanguage();
     }
 }
 
@@ -87,6 +88,8 @@ async function loadMAL(username, status = "1") {
     console.log("MAL request:", url);
 
     const malList = await (await fetch(url)).json();
+
+    currentMalList = malList;
 
     resultsDiv.innerHTML = "";
 
@@ -118,6 +121,24 @@ async function loadMAL(username, status = "1") {
     }
 }
 
+async function rerenderCurrentLanguage() {
+
+    if (!currentMalList) return;
+
+    document.getElementById("results").innerHTML = "";
+
+    for (const anime of currentMalList) {
+
+        const id = anime.anime_id;
+        const title =
+            anime.anime_title_eng || anime.anime_title;
+
+        const image =
+            toLargeImage(anime.anime_image_path);
+
+        await loadAnime(id, title, image);
+    }
+}
 
 /* =========================================================
    LOAD ANIME
@@ -128,6 +149,22 @@ async function loadAnime(id, title, image) {
     let usedCache = true;
 
     let themes = getCache(id);
+
+    if (!themes) {
+
+        const res = await fetch(
+            `https://api.tenrai.org/v1/anime/${id}/themes`
+        );
+
+        const data = await res.json();
+
+        themes = data.data;
+
+        setCache(id, themes);
+
+        usedCache = false;
+    }
+
     let metadata = null;
 
     if (currentLanguage === "jp") {
@@ -150,21 +187,6 @@ async function loadAnime(id, title, image) {
         }
     }
 
-    if (!metadata) {
-
-        const animeRes = await fetch(
-            `https://api.tenrai.org/v1/anime/${id}`
-        );
-
-        const animeData = await animeRes.json();
-
-        metadata = animeData.data;
-
-        setCache("metadata_" + id, metadata);
-
-        usedCache = false;
-    }
-
     if (usedCache) {
         console.log("CACHE HIT:", id);
     } else {
@@ -177,7 +199,7 @@ async function loadAnime(id, title, image) {
         image,
         themes,
         metadata?.title_english || title,
-        metadata?.title_japanese || title
+        metadata?.title_japanese || titleEng
     );
 
     return usedCache;
@@ -313,7 +335,7 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
                 ? `${item.titleJp} - ${item.artistJp}`
                 : `${item.titleEng} by ${item.artistEng}`;
 
-        labelText =
+        const labelText =
             currentLanguage === "jp"
                 ? `${isOpening ? "オープニング" : "エンディング"}${item.counter}`
                 : `${type} ${item.counter}`;
