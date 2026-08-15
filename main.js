@@ -199,7 +199,7 @@ async function loadAnime(id, title, image) {
         image,
         themes,
         metadata?.title_english || title,
-        metadata?.title_japanese || titleEng
+        metadata?.title_japanese || title
     );
 
     return usedCache;
