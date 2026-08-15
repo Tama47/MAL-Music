@@ -349,13 +349,13 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
         return `
         <div class="song">
 
-            <a href="https://www.google.com/search?q=${searchQuery}&tbm=vid" target="_blank">
+            <a href="https://www.google.com/search?q=${searchQuery}&tbm=vid" target="_blank" style="text-decoration: underline; display: inline-block;">
                 ${labelText}
             </a>
 
-            &nbsp;|&nbsp;
+            |
 
-            <a href="https://music.youtube.com/search?q=${songQuery}" target="_blank">
+            <a href="https://music.youtube.com/search?q=${songQuery}" target="_blank" style="text-decoration: underline; display: inline-block;">
                 ${songText}
             </a>
 
