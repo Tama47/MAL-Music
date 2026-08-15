@@ -108,7 +108,13 @@ async function loadMAL(username, status = "1") {
 
         const cached = await loadAnime(id, title, image);
 
-        if (!cached) await sleep(500);
+        if (!cached) {
+            await sleep(
+                currentLanguage === "jp"
+                    ? 500
+                    : 250
+            );
+        }
     }
 }
 
@@ -122,21 +128,26 @@ async function loadAnime(id, title, image) {
     let usedCache = true;
 
     let themes = getCache(id);
-    let metadata = getCache("metadata_" + id);
+    let metadata = null;
 
-    if (!themes) {
+    if (currentLanguage === "jp") {
 
-        const res = await fetch(
-            `https://api.tenrai.org/v1/anime/${id}/themes`
-        );
+        metadata = getCache("metadata_" + id);
 
-        const data = await res.json();
+        if (!metadata) {
 
-        themes = data.data;
+            const animeRes = await fetch(
+                `https://api.tenrai.org/v1/anime/${id}`
+            );
 
-        setCache(id, themes);
+            const animeData = await animeRes.json();
 
-        usedCache = false;
+            metadata = animeData.data;
+
+            setCache("metadata_" + id, metadata);
+
+            usedCache = false;
+        }
     }
 
     if (!metadata) {
@@ -165,8 +176,8 @@ async function loadAnime(id, title, image) {
         title,
         image,
         themes,
-        metadata.title_english || title,
-        metadata.title_japanese || title
+        metadata?.title_english || title,
+        metadata?.title_japanese || title
     );
 
     return usedCache;
@@ -233,11 +244,17 @@ function renderCard(id, title, image, themes, titleEng, titleJp) {
         <div>
             <h3>
                 <a class="title-link" href="${malLink}" target="_blank">
-                    ${title}
+                    ${currentLanguage === "jp"
+                        ? titleJp
+                        : titleEng}
                 </a>
             </h3>
 
-            <strong>Openings:</strong>
+            <strong>
+                ${currentLanguage === "jp"
+                    ? "オープニング:"
+                    : "Openings:"}
+            </strong>
             ${renderSongs(
                 openings,
                 id,
@@ -247,7 +264,11 @@ function renderCard(id, title, image, themes, titleEng, titleJp) {
 
             <br>
 
-            <strong>Endings:</strong>
+            <strong>
+                ${currentLanguage === "jp"
+                    ? "エンディング:"
+                    : "Endings:"}
+            </strong>
             ${renderSongs(
                 endings,
                 id,
@@ -292,7 +313,7 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
                 ? `${item.titleJp} - ${item.artistJp}`
                 : `${item.titleEng} by ${item.artistEng}`;
 
-        const labelText =
+        labelText =
             currentLanguage === "jp"
                 ? `${isOpening ? "オープニング" : "エンディング"}${item.counter}`
                 : `${type} ${item.counter}`;
@@ -310,7 +331,7 @@ function renderSongs(list, animeId, animeTitleEng, animeTitleJp) {
                 ${labelText}
             </a>
 
-            |
+            &nbsp;|&nbsp;
 
             <a href="https://music.youtube.com/search?q=${songQuery}" target="_blank">
                 ${songText}
@@ -409,7 +430,7 @@ function setCache(id, data) {
 
 
 /* =========================================================
-   ⏱ Timer
+   Timer
    ========================================================= */
 
 function sleep(ms) {
