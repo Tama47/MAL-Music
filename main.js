@@ -83,7 +83,7 @@ async function loadMAL(username, status = "1") {
     resultsDiv.innerHTML = "Loading...";
 
     const url =
-        `https://api.cors.lol/?url=https://myanimelist.net/animelist/${username}/load.json?status=${status}`;
+        `https://corsproxy.io/?key=a92e18bd&url=https://myanimelist.net/animelist/${username}/load.json?status=${status}`;
 
     console.log("MAL request:", url);
 
